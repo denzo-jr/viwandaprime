@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { initials } from "@/lib/format";
+import { machinePhoto, technicianPhoto } from "@/lib/media";
 
 /** Small mono label that sits above a heading. */
 export function Eyebrow({ children }: { children: React.ReactNode }) {
@@ -74,6 +75,56 @@ export function Avatar({
       }}
     >
       {initials(name)}
+    </div>
+  );
+}
+
+export function TechnicianPhoto({
+  name,
+  size = 48,
+  featured = false,
+}: {
+  name: string;
+  size?: number;
+  featured?: boolean;
+}) {
+  return (
+    <div
+      className={`photo-frame shrink-0 ${featured ? "photo-featured" : ""}`}
+      style={featured ? undefined : { width: size, height: size }}
+    >
+      <img
+        src={technicianPhoto(name)}
+        alt={`${name}, technician`}
+        width={featured ? 720 : size * 2}
+        height={featured ? 520 : size * 2}
+        loading={featured ? "eager" : "lazy"}
+      />
+    </div>
+  );
+}
+
+export function MachinePhoto({
+  name,
+  category,
+  featured = false,
+  compact = false,
+}: {
+  name: string;
+  category?: string;
+  featured?: boolean;
+  compact?: boolean;
+}) {
+  return (
+    <div className={`machine-photo ${featured ? "machine-photo-featured" : ""} ${compact ? "machine-photo-compact" : ""}`}>
+      <img
+        src={machinePhoto(name, category)}
+        alt={`${name} industrial equipment`}
+        width={featured ? 900 : 480}
+        height={featured ? 600 : 320}
+        loading={featured ? "eager" : "lazy"}
+      />
+      <span className="machine-photo-shade" />
     </div>
   );
 }

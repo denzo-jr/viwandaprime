@@ -3,7 +3,7 @@ import { MapPin, Phone, Briefcase } from "lucide-react";
 import { currentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { csv, timeAgo, tzs } from "@/lib/format";
-import { Avatar, PageHeader, Pill, SectionTitle, Stars } from "@/components/ui";
+import { Avatar, PageHeader, Pill, SectionTitle, Stars, TechnicianPhoto } from "@/components/ui";
 
 const ACCENT = "#ff7449";
 
@@ -33,11 +33,10 @@ export default async function TechnicianProfile({
       <PageHeader title="Fundi profile" back="/fundilink?tab=fundis" />
 
       <section className="pad">
-        <div className="card p-5 text-center">
-          <div className="flex justify-center">
-            <Avatar name={tech.name} color={tech.avatarColor} size={72} />
-          </div>
-          <h2 className="display text-xl mt-3">{tech.name}</h2>
+        <div className="card p-3 text-center overflow-hidden">
+          <TechnicianPhoto name={tech.name} featured />
+          <div className="px-2 pb-2">
+          <h2 className="display text-xl mt-4">{tech.name}</h2>
           {tech.verified ? (
             <span
               className="tag mt-2"
@@ -81,6 +80,7 @@ export default async function TechnicianProfile({
                 per hour
               </p>
             </div>
+          </div>
           </div>
         </div>
       </section>

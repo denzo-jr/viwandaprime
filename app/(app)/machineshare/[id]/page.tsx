@@ -6,7 +6,7 @@ import { prisma } from "@/lib/db";
 import { tzs, tzsShort, PRICE_UNIT_LABEL } from "@/lib/format";
 import { bookMachineAction } from "@/app/actions/machineshare";
 import PayMethod from "@/components/PayMethod";
-import { Avatar, PageHeader, Pill, SectionTitle, Stars } from "@/components/ui";
+import { Avatar, MachinePhoto, PageHeader, Pill, SectionTitle, Stars } from "@/components/ui";
 
 const ACCENT = "#3175b8";
 
@@ -63,16 +63,7 @@ export default async function MachineDetail({
       <div className="lg:grid lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] lg:gap-8 lg:items-start lg:pr-10">
         <div className="min-w-0">
       <section className="pad">
-        <div
-          className="h-40 rounded-2xl grid place-items-center font-mono text-lg font-bold tracking-widest"
-          style={{
-            background: `${ACCENT}14`,
-            color: ACCENT,
-            border: `1px solid ${ACCENT}25`,
-          }}
-        >
-          {machine.imageEmoji}
-        </div>
+        <MachinePhoto name={machine.name} category={machine.category} featured />
 
         <h2 className="display text-xl mt-4 leading-tight">{machine.name}</h2>
 

@@ -5,7 +5,7 @@ import { currentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { tzsShort, PRICE_UNIT_LABEL } from "@/lib/format";
 import { MACHINE_CATEGORIES } from "@/lib/tz";
-import { EmptyState, PageHeader, Pill } from "@/components/ui";
+import { EmptyState, MachinePhoto, PageHeader, Pill } from "@/components/ui";
 
 const ACCENT = "#3175b8";
 
@@ -81,17 +81,9 @@ export default async function MachineSharePage({
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {machines.map((m) => (
-              <Link key={m.id} href={`/machineshare/${m.id}`} className="card p-3">
-                <div
-                  className="h-20 rounded-lg grid place-items-center mb-3 font-mono text-xs font-bold tracking-wider"
-                  style={{
-                    background: `${ACCENT}14`,
-                    color: ACCENT,
-                    border: `1px solid ${ACCENT}25`,
-                  }}
-                >
-                  {m.imageEmoji}
-                </div>
+              <Link key={m.id} href={`/machineshare/${m.id}`} className="card p-2.5 overflow-hidden">
+                <MachinePhoto name={m.name} category={m.category} />
+                <div className="px-1 pt-3">
                 <p className="text-sm font-semibold leading-snug line-clamp-2">
                   {m.name}
                 </p>
@@ -109,6 +101,7 @@ export default async function MachineSharePage({
                 <p className="text-[0.68rem] text-[var(--color-mist)] mt-1.5 inline-flex items-center gap-1">
                   <MapPin size={10} /> {m.district}
                 </p>
+                </div>
               </Link>
             ))}
           </div>

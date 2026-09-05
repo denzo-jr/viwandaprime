@@ -13,7 +13,7 @@ import {
   submitQuoteAction,
 } from "@/app/actions/fundilink";
 import PayMethod from "@/components/PayMethod";
-import { Avatar, PageHeader, Pill, SectionTitle, Stars, StatusTag } from "@/components/ui";
+import { Avatar, MachinePhoto, PageHeader, Pill, SectionTitle, Stars, StatusTag, TechnicianPhoto } from "@/components/ui";
 
 const ACCENT = "#ff7449";
 
@@ -75,7 +75,9 @@ export default async function JobDetail({
       <div className="lg:grid lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] lg:gap-8 lg:items-start lg:pr-10">
         <div className="min-w-0">
       <section className="pad">
-        <div className="card p-4">
+        <div className="card p-3 overflow-hidden">
+          <MachinePhoto name={job.machineType} category="Repair" />
+          <div className="px-1 pt-4">
           <div className="flex items-start justify-between gap-3">
             <h2 className="display text-lg leading-tight">{job.title}</h2>
             <StatusTag status={job.status} />
@@ -105,6 +107,7 @@ export default async function JobDetail({
                 {tzsShort(job.budgetMin)}–{tzsShort(job.budgetMax)}
               </span>
             ) : null}
+          </div>
           </div>
         </div>
       </section>
@@ -237,7 +240,7 @@ export default async function JobDetail({
                 className="card p-3.5 flex items-center gap-3"
                 style={{ borderColor: index === 0 ? `${ACCENT}66` : undefined }}
               >
-                <Avatar name={technician.name} color={technician.avatarColor} size={40} />
+                <TechnicianPhoto name={technician.name} size={46} />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold truncate">
                     {index === 0 ? "Best match · " : ""}{technician.name}
@@ -276,11 +279,7 @@ export default async function JobDetail({
                 }}
               >
                 <div className="flex items-start gap-3">
-                  <Avatar
-                    name={q.technician.name}
-                    color={q.technician.avatarColor}
-                    size={40}
-                  />
+                  <TechnicianPhoto name={q.technician.name} size={46} />
                   <div className="min-w-0 flex-1">
                     <Link
                       href={`/fundilink/technicians/${q.technician.id}`}
