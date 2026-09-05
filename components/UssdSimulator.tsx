@@ -68,10 +68,10 @@ export default function UssdSimulator({ phone }: { phone: string }) {
       <div
         className="rounded-2xl p-5 font-mono text-sm leading-relaxed whitespace-pre-wrap min-h-[13rem]"
         style={{
-          background: "#0a1f12",
-          border: "1px solid #1d4a2c",
-          color: "#7ff2a8",
-          boxShadow: "inset 0 0 30px rgba(34,197,94,0.08)",
+          background: "#213c36",
+          border: "1px solid #2f544b",
+          color: "#d8ef51",
+          boxShadow: "inset 0 0 30px rgba(216,239,81,0.06)",
         }}
       >
         {busy ? "…" : screen}
@@ -103,12 +103,12 @@ export default function UssdSimulator({ phone }: { phone: string }) {
             onClick={dial}
             disabled={busy}
             className="btn w-full"
-            style={{ background: "#22c55e", color: "#04240f" }}
+            style={{ background: "#d8ef51", color: "#19362e" }}
           >
             <Phone size={17} /> Dial {SERVICE_CODE}
           </button>
         ) : (
-          <button onClick={hangUp} className="btn btn-ghost w-full" style={{ color: "#ef4444" }}>
+          <button onClick={hangUp} className="btn btn-ghost w-full" style={{ color: "#c43e21" }}>
             <PhoneOff size={17} /> End session
           </button>
         )}

@@ -88,6 +88,30 @@ async function main() {
     },
   });
 
+  // The project owner's real handset — kept in the seed so `db:reset` never
+  // locks them out of the live USSD and SMS demo. All three roles so every
+  // menu branch is reachable from one number.
+  const owner = await prisma.user.create({
+    data: {
+      name: "Ikoba Tech",
+      businessName: "IKOBA TECH",
+      phone: "+255787400249",
+      passwordHash: hash,
+      roles: "BUSINESS,TECHNICIAN,WORKER",
+      region: "Dar es Salaam",
+      district: "Kinondoni",
+      bio: "Industrial automation and control systems.",
+      skills: "PLC / Automation,Electrical,Welding",
+      hourlyRate: 30_000,
+      yearsExperience: 7,
+      verified: true,
+      rating: 4.8,
+      ratingCount: 19,
+      avatarColor: "#00877d",
+      walletBalance: 250_000,
+    },
+  });
+
   // ---- Supporting cast ----------------------------------------------------
   const technicians = await Promise.all(
     [
@@ -873,6 +897,7 @@ async function main() {
   };
   console.log("Seed complete:", counts);
   console.log(`All demo accounts use PIN ${PIN}`);
+  console.log(`Owner handset ${owner.phone} is registered for live USSD/SMS.`);
 }
 
 main()
