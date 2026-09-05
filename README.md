@@ -184,6 +184,20 @@ result is mapped back to its own notification row.
 just configuration: create a USSD channel in the Africa's Talking dashboard and
 point its callback at `https://<your-host>/api/ussd`.
 
-That address has to be public HTTPS, so USSD cannot be exercised while the app
-is only reachable on a local network. The in-app simulator at `/ussd` posts to
-the same endpoint and is the way to demo the flow offline.
+That address has to be public HTTPS, so a LAN address will not do. Open a
+tunnel:
+
+```bash
+npm run tunnel
+```
+
+It prints the app URL and the callback to paste into **Sandbox > USSD >
+Create Channel > Callback URL**, then answers real USSD sessions.
+
+Two things about the free ngrok plan: the URL changes on every restart, so the
+callback has to be updated each time; and browsers get an interstitial once per
+session (one click through "Visit Site"). Africa's Talking is not a browser, so
+the webhook is unaffected.
+
+The in-app simulator at `/ussd` posts to the same endpoint and is the way to
+demo the flow with no tunnel at all.

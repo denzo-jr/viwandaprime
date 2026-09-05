@@ -9,7 +9,8 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma db push --force-reset && npm run db:seed",
-    "lan": "next start -H 0.0.0.0 -p 3000"
+    "lan": "next start -H 0.0.0.0 -p 3000",
+    "tunnel": "node scripts/tunnel.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
