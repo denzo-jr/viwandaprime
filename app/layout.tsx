@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b0f14",
+  themeColor: "#102421",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -29,13 +29,15 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
+        {/* Scroll-reveal starts hidden; without JS it must never stay hidden. */}
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
       </head>
-      <body>
-        <div className="shell">{children}</div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

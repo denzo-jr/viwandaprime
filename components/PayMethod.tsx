@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PAYMENT_METHODS } from "@/lib/tz";
 
 /** Mobile-money picker used wherever money changes hands. */
-export default function PayMethod({ accent = "#f59e0b" }: { accent?: string }) {
+export default function PayMethod({ accent = "#00877d" }: { accent?: string }) {
   const [method, setMethod] = useState<string>(PAYMENT_METHODS[0].id);
 
   return (

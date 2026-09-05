@@ -70,7 +70,7 @@ export const MODULES = [
     description:
       "Describe the fault, get quotes from verified technicians nearby, and hire the right fundi the same day.",
     href: "/fundilink",
-    accent: "#f59e0b",
+    accent: "#ff7449",
   },
   {
     slug: "machineshare",
@@ -80,7 +80,7 @@ export const MODULES = [
     description:
       "Access heavy-duty equipment and spare parts without buying them outright. List idle machines and earn.",
     href: "/machineshare",
-    accent: "#0ea5e9",
+    accent: "#3175b8",
   },
   {
     slug: "takatrade",
@@ -90,7 +90,7 @@ export const MODULES = [
     description:
       "Turn factory by-products into affordable raw material for another business instead of landfill.",
     href: "/takatrade",
-    accent: "#22c55e",
+    accent: "#338346",
   },
   {
     slug: "kibaruapay",
@@ -100,14 +100,14 @@ export const MODULES = [
     description:
       "Post short-term industrial work, hire nearby workers, and pay through mobile-money escrow.",
     href: "/kibaruapay",
-    accent: "#a855f7",
+    accent: "#7554b5",
   },
 ] as const;
 
 export const URGENCY = [
-  { id: "LOW", label: "Can wait", color: "#64748b" },
-  { id: "NORMAL", label: "This week", color: "#0ea5e9" },
-  { id: "URGENT", label: "Production stopped", color: "#ef4444" },
+  { id: "LOW", label: "Can wait", color: "#36834a" },
+  { id: "NORMAL", label: "This week", color: "#bd8a00" },
+  { id: "URGENT", label: "Production stopped", color: "#db4d30" },
 ] as const;
 
 /** Normalise any Tanzanian number to E.164 so Africa's Talking accepts it. */

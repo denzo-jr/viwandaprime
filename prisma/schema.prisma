@@ -76,8 +76,9 @@ model JobRequest {
   district    String
   budgetMin   Int?
   budgetMax   Int?
-  status      String  @default("OPEN") // OPEN | ASSIGNED | IN_PROGRESS | COMPLETED | CANCELLED
+  status      String  @default("OPEN") // OPEN | ASSIGNED | ACCEPTED | EN_ROUTE | ARRIVED | REPAIRING | COMPLETED | CONFIRMED | CANCELLED
   agreedPrice Int?
+  source      String  @default("APP") // APP | USSD | WEB
 
   businessId   String
   business     User    @relation("JobBusiness", fields: [businessId], references: [id], onDelete: Cascade)
@@ -87,10 +88,24 @@ model JobRequest {
   createdAt   DateTime  @default(now())
   completedAt DateTime?
 
-  quotes   Quote[]
-  payments Payment[]
+  quotes        Quote[]
+  payments      Payment[]
+  statusHistory RepairStatusHistory[]
 
   @@index([status, region])
+}
+
+model RepairStatusHistory {
+  id     String @id @default(cuid())
+  status String
+  note   String?
+
+  jobId String
+  job   JobRequest @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([jobId, createdAt])
 }
 
 model Quote {

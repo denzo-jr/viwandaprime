@@ -8,6 +8,12 @@ import { notifyMany, notify } from "@/lib/africastalking";
 import { holdInEscrow, releaseEscrow } from "@/lib/payments";
 import { tzs, tzsShort } from "@/lib/format";
 
+async function addRepairHistory(jobId: string, status: string, note?: string) {
+  await prisma.repairStatusHistory.create({
+    data: { jobId, status, note },
+  });
+}
+
 export async function createJobAction(formData: FormData) {
   const user = await requireUser();
 
@@ -31,6 +37,13 @@ export async function createJobAction(formData: FormData) {
       budgetMin,
       budgetMax,
       businessId: user.id,
+      source: "APP",
+      statusHistory: {
+        create: [
+          { status: "CREATED", note: "Breakdown received by Viwanda dispatch." },
+          { status: "MATCHING", note: "Technicians in the region are being alerted." },
+        ],
+      },
     },
   });
 
@@ -113,6 +126,13 @@ export async function acceptQuoteAction(formData: FormData) {
         agreedPrice: quote.price,
       },
     }),
+    prisma.repairStatusHistory.create({
+      data: {
+        jobId: quote.jobId,
+        status: "TECHNICIAN_FOUND",
+        note: `${quote.technician.name} selected; payment moved into escrow.`,
+      },
+    }),
   ]);
 
   await holdInEscrow({
@@ -142,12 +162,14 @@ export async function completeJobAction(formData: FormData) {
     where: { id: jobId },
     include: { payments: true },
   });
-  if (!job || job.businessId !== user.id) return;
+  if (!job || job.businessId !== user.id || job.status !== "COMPLETED") return;
 
   await prisma.jobRequest.update({
     where: { id: jobId },
-    data: { status: "COMPLETED", completedAt: new Date() },
+    data: { status: "CONFIRMED", completedAt: new Date() },
   });
+
+  await addRepairHistory(jobId, "CONFIRMED", "Business confirmed the machine is running.");
 
   const held = job.payments.find((p) => p.status === "HELD_IN_ESCROW");
   if (held) await releaseEscrow(held.id);
@@ -155,16 +177,53 @@ export async function completeJobAction(formData: FormData) {
   revalidatePath(`/fundilink/jobs/${jobId}`);
 }
 
-/** Technician marks work started. */
-export async function startJobAction(formData: FormData) {
+/** Technician advances the on-site repair lifecycle. */
+export async function markRepairStatusAction(formData: FormData) {
   const user = await requireUser();
   const jobId = String(formData.get("jobId") ?? "");
-  const job = await prisma.jobRequest.findUnique({ where: { id: jobId } });
-  if (!job || job.technicianId !== user.id) return;
+  const status = String(formData.get("status") ?? "");
+  const note = String(formData.get("note") ?? "").trim();
+  const allowed = ["ACCEPTED", "EN_ROUTE", "ARRIVED", "REPAIRING", "COMPLETED"];
+
+  const job = await prisma.jobRequest.findUnique({
+    where: { id: jobId },
+    include: { business: true },
+  });
+  const transitions: Record<string, string> = {
+    ASSIGNED: "ACCEPTED",
+    ACCEPTED: "EN_ROUTE",
+    EN_ROUTE: "ARRIVED",
+    ARRIVED: "REPAIRING",
+    REPAIRING: "COMPLETED",
+  };
+  if (
+    !job ||
+    job.technicianId !== user.id ||
+    !allowed.includes(status) ||
+    transitions[job.status] !== status
+  ) return;
 
   await prisma.jobRequest.update({
     where: { id: jobId },
-    data: { status: "IN_PROGRESS" },
+    data: { status },
   });
+  await addRepairHistory(jobId, status, note || statusNotes[status]);
+
+  if (["ACCEPTED", "ARRIVED", "COMPLETED"].includes(status)) {
+    await notify({
+      to: job.business.phone,
+      userId: job.businessId,
+      message: `Viwanda Prime: ${user.name} updated "${job.title}" to ${status.replace("_", " ")}.`,
+    });
+  }
+
   revalidatePath(`/fundilink/jobs/${jobId}`);
 }
+
+const statusNotes: Record<string, string> = {
+  ACCEPTED: "Technician accepted the dispatch.",
+  EN_ROUTE: "Technician is travelling to the site.",
+  ARRIVED: "Technician has arrived at the factory.",
+  REPAIRING: "Diagnosis/repair is in progress.",
+  COMPLETED: "Technician marked the repair complete; awaiting business confirmation.",
+};

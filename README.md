@@ -108,6 +108,19 @@ at which point the earner's wallet is credited and both sides get an SMS.
 
 This is the same flow in all four modules (`lib/payments.ts`).
 
+## Smart repair dispatch
+
+FundiLink now ranks nearby technicians using machine-skill overlap, district,
+availability, verification, rating, experience, and completed-job signals. The
+same ranking powers both the app and the USSD journey, where a business can pick
+one of the top three matches or alert everyone.
+
+Once assigned, every repair has an auditable field timeline:
+`CREATED → MATCHING → TECHNICIAN FOUND → ACCEPTED → EN ROUTE → ARRIVED → REPAIRING → COMPLETED → CONFIRMED`.
+Key updates trigger SMS notifications, and escrow can only be released after the
+technician marks the repair complete and the business confirms the machine runs.
+The original reporting channel (`APP`, `WEB`, or `USSD`) is retained on the job.
+
 ## USSD — the 60% without smartphones
 
 Most fundis and casual workers in Tanzania are on feature phones, so the

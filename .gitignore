@@ -10,3 +10,7 @@ next-env.d.ts
 .DS_Store
 tsconfig.tsbuildinfo
 viwanda-qr.png
+
+# reference UI source, not part of the product
+SparePartUSSD-source.zip
+sparepart_extract/
