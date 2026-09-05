@@ -1,5 +1,12 @@
 // Tanzania reference data + domain vocabulary shared across all four modules.
 
+/**
+ * The USSD short code shown throughout the UI. The webhook itself ignores
+ * `serviceCode`, so this is presentation only — set it to whatever channel
+ * Africa's Talking assigns you.
+ */
+export const USSD_CODE = process.env.NEXT_PUBLIC_USSD_CODE ?? "*384*7788#";
+
 export const REGIONS: Record<string, string[]> = {
   "Dar es Salaam": ["Kinondoni", "Ilala", "Temeke", "Ubungo", "Kigamboni"],
   Arusha: ["Arusha City", "Arumeru", "Monduli"],

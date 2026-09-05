@@ -194,6 +194,15 @@ npm run tunnel
 It prints the app URL and the callback to paste into **Sandbox > USSD >
 Create Channel > Callback URL**, then answers real USSD sessions.
 
+You choose the channel number yourself — sandbox codes look like
+`*384*<channel>#`. The webhook ignores `serviceCode`, so any channel works;
+it only affects what the UI advertises. If you get something other than
+`7788`, set it once:
+
+```env
+NEXT_PUBLIC_USSD_CODE="*384*4321#"
+```
+
 Two things about the free ngrok plan: the URL changes on every restart, so the
 callback has to be updated each time; and browsers get an interstitial once per
 session (one click through "Visit Site"). Africa's Talking is not a browser, so

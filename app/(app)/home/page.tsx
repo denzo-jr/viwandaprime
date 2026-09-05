@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { currentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { MODULES } from "@/lib/tz";
+import { MODULES, USSD_CODE } from "@/lib/tz";
 import { tzs, timeAgo } from "@/lib/format";
 import { Avatar, Eyebrow, Stat, StatusTag } from "@/components/ui";
 
@@ -251,7 +251,7 @@ export default async function HomePage() {
               className="text-[0.76rem] mt-1"
               style={{ color: "#bdccc6" }}
             >
-              Dial <b className="mono">*384*7788#</b> to reach the marketplace
+              Dial <b className="mono">{USSD_CODE}</b> to reach the marketplace
               over USSD.
             </p>
           </div>

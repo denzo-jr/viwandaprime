@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { Phone, PhoneOff, CornerDownLeft } from "lucide-react";
+import { USSD_CODE } from "@/lib/tz";
 
-const SERVICE_CODE = "*384*7788#";
+const SERVICE_CODE = USSD_CODE;
 
 export default function UssdSimulator({ phone }: { phone: string }) {
   const [screen, setScreen] = useState<string>(

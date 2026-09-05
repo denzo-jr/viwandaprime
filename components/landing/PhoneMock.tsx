@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { USSD_CODE } from "@/lib/tz";
 
 const SCRIPT = [
-  { t: "dial", body: "*384*7788#" },
+  { t: "dial", body: USSD_CODE },
   {
     t: "screen",
     body:
@@ -57,7 +58,7 @@ export default function PhoneMock() {
     current.t === "screen"
       ? current.body
       : SCRIPT.slice(0, step).reverse().find((s) => s.t === "screen")?.body ??
-        "Dial *384*7788# to start";
+        `Dial ${USSD_CODE} to start`;
 
   return (
     <div ref={ref} className="mx-auto" style={{ width: 238 }}>

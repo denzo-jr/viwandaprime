@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { currentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { MODULES } from "@/lib/tz";
+import { MODULES, USSD_CODE } from "@/lib/tz";
 import { demoLoginAction } from "./actions/auth";
 import Nav from "@/components/landing/Nav";
 import Reveal from "@/components/landing/Reveal";
@@ -147,7 +147,7 @@ export default async function Landing() {
                   className="ml-2.5 mono text-[10px] tracking-[1px]"
                   style={{ color: "#c1d0ca" }}
                 >
-                  OFFLINE ACCESS READY · *384*7788#
+                  OFFLINE ACCESS READY · {USSD_CODE}
                 </b>
               </div>
             </Reveal>
@@ -167,7 +167,7 @@ export default async function Landing() {
             "TAKATRADE — INDUSTRIAL WASTE MARKETPLACE",
             "KIBARUAPAY — LABOUR WITH SECURE PAY",
             "M-PESA · MIXX · AIRTEL MONEY · HALOPESA",
-            "USSD *384*7788# — WORKS ON ANY PHONE",
+            `USSD ${USSD_CODE} — WORKS ON ANY PHONE`,
           ]}
         />
       </div>
@@ -428,7 +428,7 @@ export default async function Landing() {
                 <div className="min-w-0">
                   <p className="eyebrow">Africa&rsquo;s Talking ready</p>
                   <h3 className="display text-[1.05rem] mt-1.5">
-                    Dial *384*7788# from any phone.
+                    Dial {USSD_CODE} from any phone.
                   </h3>
                   <p
                     className="text-[0.78rem] mt-1.5 leading-relaxed"
@@ -533,7 +533,7 @@ export default async function Landing() {
             The operating marketplace for Tanzania&rsquo;s industrial economy.
           </span>
           <span className="mono text-[10px] ml-auto" style={{ color: "#b6d84b" }}>
-            ● OPERATIONAL · *384*7788#
+            ● OPERATIONAL · {USSD_CODE}
           </span>
         </div>
       </footer>

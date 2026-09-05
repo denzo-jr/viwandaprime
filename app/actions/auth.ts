@@ -8,7 +8,7 @@ import {
   hashPassword,
   verifyPassword,
 } from "@/lib/auth";
-import { normalisePhone, REGIONS } from "@/lib/tz";
+import { normalisePhone, REGIONS, USSD_CODE } from "@/lib/tz";
 import { notify } from "@/lib/africastalking";
 
 export type FormState = { error?: string } | undefined;
@@ -79,7 +79,7 @@ export async function registerAction(
   await notify({
     to: user.phone,
     userId: user.id,
-    message: `Karibu Viwanda Prime, ${user.name}! Your account is ready. Dial *384*7788# or open the app to find work, technicians, machines and materials.`,
+    message: `Karibu Viwanda Prime, ${user.name}! Your account is ready. Dial ${USSD_CODE} or open the app to find work, technicians, machines and materials.`,
   });
 
   await createSession(user.id);

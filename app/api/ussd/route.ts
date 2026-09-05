@@ -10,7 +10,7 @@
  */
 
 import { prisma } from "@/lib/db";
-import { normalisePhone } from "@/lib/tz";
+import { normalisePhone, USSD_CODE } from "@/lib/tz";
 import { tzs } from "@/lib/format";
 import { notify } from "@/lib/africastalking";
 import { sortTechniciansByMatch } from "@/lib/matching";
@@ -139,7 +139,7 @@ export async function POST(req: Request) {
     const job = await prisma.jobRequest.create({
       data: {
         title: `${machineType} fault reported by USSD`,
-        description: `${problem}. Reported from a feature phone via *384*7788# by ${user.name}.`,
+        description: `${problem}. Reported from a feature phone via ${USSD_CODE} by ${user.name}.`,
         machineType,
         urgency,
         region: user.region,
