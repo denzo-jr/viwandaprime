@@ -1,0 +1,984 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Viwanda Prime — industrial operations design system.
+   Deep charcoal navigation, paper canvas, lime availability signals,
+   emergency orange for critical reporting, compact operational typography.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --color-ink: #142422;
+  --color-ink-2: #ffffff;
+  --color-ink-3: #ffffff;
+  --color-line: #e6ecea;
+  --color-mist: #71807d;
+  --color-chalk: #142422;
+
+  --color-paper: #f6f8f7;
+  --color-navy: #102421;
+  --color-navy-2: #203a34;
+  --color-teal: #00877d;
+  --color-lime: #d8ef51;
+  --color-orange: #ff7449;
+
+  /* Module accents, drawn from the operational stat tones */
+  --color-fundi: #ff7449;
+  --color-machine: #3175b8;
+  --color-taka: #338346;
+  --color-kibarua: #7554b5;
+
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ---------------------------------------------------------------------------
+   Shell — icon rail on mobile-to-tablet, full sidebar on desktop
+--------------------------------------------------------------------------- */
+
+.shell {
+  width: 100%;
+  max-width: 34rem;
+  margin: 0 auto;
+  min-height: 100dvh;
+  position: relative;
+}
+
+.pad {
+  padding-inline: 1.15rem;
+}
+
+.with-nav {
+  padding-bottom: 6.5rem;
+}
+
+@media (min-width: 1024px) {
+  .shell {
+    max-width: none;
+    margin: 0;
+    padding-left: 250px;
+  }
+
+  .pad {
+    padding-inline: 42px;
+  }
+
+  .with-nav {
+    padding-bottom: 3rem;
+  }
+
+  .canvas {
+    max-width: 1400px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Type
+--------------------------------------------------------------------------- */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+/* The small mono label that sits above almost every heading. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #84918e;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* ---------------------------------------------------------------------------
+   Surfaces
+--------------------------------------------------------------------------- */
+
+.card,
+.panel {
+  background: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: 9px;
+  transition: border-color 0.18s ease, box-shadow 0.22s ease,
+    transform 0.18s ease;
+}
+
+.card:active {
+  transform: scale(0.995);
+}
+
+@media (hover: hover) {
+  .card-lift:hover {
+    border-color: #cfdad7;
+    box-shadow: 0 10px 30px -18px rgb(20 36 34 / 0.35);
+    transform: translateY(-2px);
+  }
+}
+
+.panel-title {
+  padding: 22px 23px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+/* Status pill — small, mono, pastel. */
+.tag,
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: #eef2f0;
+  color: #587069;
+}
+
+/* ---------------------------------------------------------------------------
+   Controls
+--------------------------------------------------------------------------- */
+
+.field {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #dbe4e1;
+  border-radius: 7px;
+  padding: 13px;
+  color: var(--color-ink);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.field::placeholder {
+  color: #9aa8a4;
+}
+
+.field:focus {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 3px rgb(0 135 125 / 0.12);
+}
+
+.label {
+  display: block;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--color-ink);
+  margin: 0 0 6px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 46px;
+  padding: 0 17px;
+  border-radius: 7px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.16s ease, transform 0.14s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.985);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Primary is the deep ink button from the reference UI. */
+.btn-primary {
+  background: var(--color-ink);
+  color: #fff;
+}
+
+@media (hover: hover) {
+  .btn-primary:hover {
+    background: #26403b;
+  }
+}
+
+.btn-ghost,
+.btn-outline {
+  background: #fff;
+  border-color: #cfdad7;
+  color: var(--color-ink);
+}
+
+@media (hover: hover) {
+  .btn-ghost:hover,
+  .btn-outline:hover {
+    border-color: #b6c5c1;
+    background: #fbfcfc;
+  }
+}
+
+/* The critical-incident affordance — always visually dominant. */
+.btn-emergency {
+  background: var(--color-orange);
+  color: #fff;
+}
+
+@media (hover: hover) {
+  .btn-emergency:hover {
+    background: #f2643a;
+  }
+}
+
+.link {
+  background: none;
+  color: var(--color-teal);
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Operational blocks
+--------------------------------------------------------------------------- */
+
+/* Stat tile with a pastel icon chip. */
+.stat {
+  background: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: 9px;
+  padding: 19px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 7px;
+  align-items: center;
+}
+
+.stat > .chip {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+}
+
+.stat b {
+  font-size: 25px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.stat span.k {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: var(--color-mist);
+}
+
+.tone-blue .chip {
+  background: #e8f3ff;
+  color: #3175b8;
+}
+.tone-orange .chip {
+  background: #fff0e9;
+  color: #ed653b;
+}
+.tone-green .chip {
+  background: #e8f6eb;
+  color: #338346;
+}
+.tone-purple .chip {
+  background: #f1ecff;
+  color: #7554b5;
+}
+.tone-teal .chip {
+  background: #e4f4f1;
+  color: #08756c;
+}
+
+/* Dark USSD / offline callout. */
+.offline {
+  background: #213c36;
+  color: #fff;
+  border-radius: 9px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+
+.offline .eyebrow {
+  color: var(--color-lime);
+}
+
+.ussd-icon {
+  background: var(--color-lime);
+  color: #19362e;
+  border-radius: 7px;
+  padding: 13px;
+  font-weight: 900;
+  font-family: var(--font-mono);
+}
+
+/* Availability signal. */
+.available {
+  color: #168257;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.severity {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.severity.critical,
+.severity.urgent {
+  color: #db4d30;
+}
+.severity.medium,
+.severity.normal {
+  color: #bd8a00;
+}
+.severity.low {
+  color: #36834a;
+}
+
+/* Multi-step form progress. */
+.stepper {
+  display: flex;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 8px 0;
+}
+
+.stepper div {
+  color: #91a09c;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepper div:not(:last-child)::after {
+  content: "";
+  width: 48px;
+  height: 1px;
+  background: #d9e2df;
+  margin: 0 12px;
+}
+
+.stepper b {
+  border: 1px solid #cbd8d4;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+}
+
+.stepper .current {
+  color: var(--color-ink);
+  font-weight: 800;
+}
+
+.stepper .current b {
+  background: var(--color-ink);
+  color: #fff;
+  border-color: var(--color-ink);
+}
+
+/* Table-ish list header. */
+.table-head {
+  background: #f8faf9;
+  color: #7c8b87;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scroll {
+  scrollbar-width: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Motion
+--------------------------------------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--d, 0ms);
+}
+
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: slide 42s linear infinite;
+}
+
+@keyframes slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+/* Signal-bar motif from the reference login. */
+.signal {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.signal span {
+  width: 5px;
+  background: var(--color-lime);
+  border-radius: 1px;
+}
+
+.signal span:nth-child(1) {
+  height: 8px;
+}
+.signal span:nth-child(2) {
+  height: 14px;
+}
+.signal span:nth-child(3) {
+  height: 20px;
+}
+.signal span:nth-child(4) {
+  height: 26px;
+}
+
+/* ---------------------------------------------------------------------------
+   Dedicated mobile application shell
+--------------------------------------------------------------------------- */
+
+.mobile-shell {
+  width: 100%;
+  max-width: 34rem;
+  min-height: 100dvh;
+  margin: 0 auto;
+  position: relative;
+  background: var(--color-paper);
+  box-shadow: 0 0 0 1px rgb(20 36 34 / 0.04);
+}
+
+.mobile-canvas {
+  min-height: 100dvh;
+}
+
+@media (min-width: 1024px) {
+  .mobile-shell .pad {
+    padding-inline: 1.15rem;
+  }
+
+  .mobile-shell .with-nav {
+    padding-bottom: 6.5rem;
+  }
+}
+
+@media (display-mode: standalone) {
+  body {
+    overscroll-behavior-y: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  input,
+  textarea,
+  select {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Refined mobile visual language — same Viwanda palette, native-app rhythm
+--------------------------------------------------------------------------- */
+
+.mobile-web-app {
+  background: #dfe7e4;
+}
+
+.mobile-web-app .mobile-shell {
+  background:
+    radial-gradient(circle at 100% 0%, rgb(216 239 81 / 0.10), transparent 18rem),
+    linear-gradient(180deg, #f8faf9 0%, #f2f6f4 100%);
+}
+
+.mobile-web-app .pad {
+  padding-inline: 1.15rem;
+}
+
+.mobile-web-app .with-nav {
+  padding-bottom: calc(7.1rem + env(safe-area-inset-bottom));
+}
+
+.mobile-web-app .card,
+.mobile-web-app .panel {
+  border-color: rgb(20 36 34 / 0.075);
+  border-radius: 18px;
+  box-shadow: 0 7px 24px -18px rgb(16 36 33 / 0.42);
+}
+
+.mobile-web-app .card:active {
+  transform: scale(0.985);
+}
+
+.mobile-web-app .tag,
+.mobile-web-app .badge {
+  border-radius: 999px;
+  padding: 5px 9px;
+  letter-spacing: 0.025em;
+}
+
+.mobile-web-app .field {
+  min-height: 52px;
+  border-radius: 14px;
+  border-color: #d8e2df;
+  padding: 14px 15px;
+  box-shadow: inset 0 1px 0 rgb(16 36 33 / 0.02);
+}
+
+.mobile-web-app textarea.field {
+  min-height: 116px;
+}
+
+.mobile-web-app .label {
+  margin-bottom: 8px;
+  font-size: 12px;
+  letter-spacing: 0.015em;
+}
+
+.mobile-web-app .btn {
+  min-height: 50px;
+  border-radius: 14px;
+  padding-inline: 19px;
+  box-shadow: 0 7px 18px -12px rgb(16 36 33 / 0.6);
+}
+
+.mobile-web-app .btn-primary {
+  background: #102421;
+}
+
+.mobile-web-app .btn-emergency {
+  background: linear-gradient(135deg, #ff7449, #ed5f37);
+  box-shadow: 0 10px 22px -13px rgb(255 116 73 / 0.9);
+}
+
+.mobile-web-app .stat {
+  min-height: 112px;
+  padding: 16px;
+  border-radius: 18px;
+  border-color: rgb(20 36 34 / 0.07);
+  box-shadow: 0 7px 22px -18px rgb(16 36 33 / 0.46);
+}
+
+.mobile-web-app .stat > .chip {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+}
+
+.mobile-web-app .stat b {
+  font-size: 22px;
+}
+
+.mobile-web-app .offline {
+  border-radius: 20px;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 95% 10%, rgb(216 239 81 / 0.15), transparent 9rem),
+    #17332d;
+  box-shadow: 0 16px 32px -20px rgb(16 36 33 / 0.8);
+}
+
+.mobile-web-app .ussd-icon {
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.mobile-home-header {
+  min-height: 82px;
+  padding-top: max(0.8rem, env(safe-area-inset-top));
+  color: #fff;
+  background:
+    radial-gradient(circle at 80% -20%, rgb(216 239 81 / 0.18), transparent 11rem),
+    #102421;
+}
+
+.mobile-home-header .eyebrow {
+  color: #91a9a1;
+}
+
+.mobile-mini-mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #102421;
+  background: #d8ef51;
+  font-weight: 900;
+}
+
+.mobile-welcome {
+  margin-inline: -1.15rem;
+  margin-top: -2rem;
+  padding: 2rem 1.15rem 1.35rem;
+  color: #fff;
+  background:
+    radial-gradient(circle at 92% 65%, rgb(255 116 73 / 0.14), transparent 11rem),
+    #102421;
+  border-radius: 0 0 26px 26px;
+}
+
+.mobile-welcome .eyebrow,
+.mobile-welcome p {
+  color: #a9bbb5;
+}
+
+.mobile-welcome .btn-emergency {
+  width: 100%;
+  justify-content: center;
+}
+
+.mobile-profile-hero {
+  padding-top: max(2rem, calc(env(safe-area-inset-top) + 1rem));
+  padding-bottom: 2.4rem;
+  color: #fff;
+  background:
+    radial-gradient(circle at 85% 0%, rgb(216 239 81 / 0.16), transparent 12rem),
+    linear-gradient(145deg, #102421, #193b33);
+  border-radius: 0 0 28px 28px;
+}
+
+.mobile-profile-hero .text-\[var\(--color-mist\)\] {
+  color: #afc0ba !important;
+}
+
+.mobile-profile-hero + .pad {
+  margin-top: -1.25rem;
+  position: relative;
+}
+
+.mobile-wallet-card {
+  background: linear-gradient(145deg, #fff, #eef9f6);
+  box-shadow: 0 16px 30px -22px rgb(0 135 125 / 0.7) !important;
+}
+
+.mobile-module-card {
+  min-height: 145px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-module-card::after {
+  content: "";
+  width: 74px;
+  height: 74px;
+  position: absolute;
+  right: -30px;
+  bottom: -32px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.035;
+}
+
+.mobile-page-header {
+  min-height: 86px;
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: 0.9rem;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgb(248 250 249 / 0.88);
+  border-bottom: 1px solid rgb(20 36 34 / 0.06);
+  backdrop-filter: blur(18px) saturate(1.25);
+}
+
+.mobile-back {
+  color: #526761;
+  background: #fff;
+  border: 1px solid rgb(20 36 34 / 0.08);
+  box-shadow: 0 5px 14px -11px rgb(16 36 33 / 0.75);
+}
+
+/* Floating navigation leaves the content visible around it like a native tab bar. */
+.mobile-nav {
+  bottom: 0;
+  padding: 0 10px calc(9px + env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+.mobile-nav-inner {
+  min-height: 68px;
+  padding: 7px 5px;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 23px;
+  background: rgb(16 36 33 / 0.97);
+  box-shadow: 0 18px 45px -18px rgb(6 20 17 / 0.85);
+  backdrop-filter: blur(18px);
+  pointer-events: auto;
+}
+
+.mobile-nav-link {
+  height: 100%;
+  min-height: 54px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.mobile-nav-icon {
+  width: 31px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.mobile-nav-icon.is-active {
+  background: rgb(255 255 255 / 0.08);
+  transform: translateY(-1px);
+}
+
+.mobile-nav-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mobile-nav-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  position: absolute;
+  bottom: 1px;
+}
+
+/* Sign-in and registration become a branded bottom-sheet journey. */
+.auth-mobile {
+  width: 100%;
+  max-width: 34rem;
+  margin: 0 auto;
+  background: #102421;
+}
+
+.auth-brand {
+  min-height: 330px;
+  padding: max(1.4rem, env(safe-area-inset-top)) 1.4rem 2.4rem;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(145deg, #102421 12%, #173a32 100%);
+}
+
+.auth-brand p,
+.auth-brand > div:last-child {
+  color: #b9cbc5;
+}
+
+.auth-brand h1 span {
+  color: #d8ef51;
+}
+
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #102421;
+  background: #d8ef51;
+}
+
+.brand-prime {
+  padding: 4px 7px;
+  border-radius: 7px;
+  color: #d8ef51;
+  background: rgb(216 239 81 / 0.12);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-style: normal;
+}
+
+.auth-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #b9cbc5;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.09em;
+}
+
+.auth-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.auth-orb-one {
+  width: 190px;
+  height: 190px;
+  right: -75px;
+  top: 34px;
+  background: rgb(216 239 81 / 0.08);
+  border: 1px solid rgb(216 239 81 / 0.12);
+}
+
+.auth-orb-two {
+  width: 110px;
+  height: 110px;
+  right: 42px;
+  bottom: -50px;
+  background: rgb(255 116 73 / 0.12);
+}
+
+.auth-sheet {
+  min-height: calc(100dvh - 300px);
+  margin-top: -24px;
+  padding: 12px 1.3rem calc(2rem + env(safe-area-inset-bottom));
+  position: relative;
+  z-index: 2;
+  border-radius: 26px 26px 0 0;
+  background: #fff;
+  box-shadow: 0 -14px 35px -25px rgb(0 0 0 / 0.7);
+}
+
+.auth-sheet > :not(.auth-handle) {
+  max-width: 390px;
+  margin-inline: auto;
+}
+
+.auth-handle {
+  width: 38px;
+  height: 4px;
+  margin: 0 auto 20px;
+  border-radius: 999px;
+  background: #dbe4e1;
+}
+
+.empty-state {
+  background: linear-gradient(145deg, #fff, #f7faf8);
+}
+
+@media (min-width: 1024px) {
+  .mobile-web-app .mobile-shell .lg\:grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .mobile-web-app .mobile-shell .lg\:flex-row {
+    flex-direction: column !important;
+  }
+
+  .mobile-web-app .mobile-shell .lg\:items-end {
+    align-items: stretch !important;
+  }
+
+  .mobile-web-app .mobile-page-header .top-level-back {
+    display: grid !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
