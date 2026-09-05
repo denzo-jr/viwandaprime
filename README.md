@@ -141,17 +141,49 @@ Try it in-app at `/ussd` — the simulator posts to that same endpoint.
 
 ## Africa's Talking
 
-Notifications run through one adapter (`lib/africastalking.ts`). With no API key
-it runs in **simulator mode**: every message is stored and shown in the in-app
-SMS inbox (`/inbox`), so the product demos fully offline.
+All outbound messaging goes through one adapter (`lib/africastalking.ts`), so
+the rest of the code only ever calls `notify()` or `notifyMany()`.
 
-To go live, set the credentials in `.env`:
+Three modes, chosen by environment:
 
-```
-AT_USERNAME="your-username"
-AT_API_KEY="your-api-key"
+| `.env` | Behaviour |
+| --- | --- |
+| no `AT_API_KEY` | Simulator. Messages are stored and shown in `/inbox`; nothing leaves the machine. |
+| `AT_USERNAME=sandbox` | Real API calls, but delivery only reaches the Africa's Talking simulator — never a real handset. |
+| a live username | Real SMS to real phones. |
+
+```env
+AT_USERNAME="sandbox"
+AT_API_KEY="atsk_..."
 AT_SENDER_ID="VIWANDA"
 ```
 
-Nothing else changes — every module calls `notify()`, and the same adapter then
-posts to the real messaging endpoint.
+`/inbox` shows the current mode, the account balance, and per-message delivery
+status, cost and provider message ID.
+
+### Two things worth knowing
+
+**Sender IDs.** An alphanumeric sender ID has to be registered with Africa's
+Talking, and is *always* rejected on sandbox with `InvalidSenderId` — the API
+returns HTTP 201 with an empty recipient list, so a naive integration fails
+silently. The adapter detects that response and retries once without the sender
+ID, so the message still goes out from the shared short code.
+
+**Demo numbers.** The seeded personas use invented Tanzanian numbers. On
+sandbox that is harmless. On a live account those digits belong to real people,
+so the adapter refuses them and records the message as `BLOCKED`. Override with
+`AT_ALLOW_DEMO_NUMBERS=true` only if you mean it.
+
+Bulk alerts (every technician in a region, every worker near a job) go out as a
+single API call with a comma-separated recipient list, and each recipient's
+result is mapped back to its own notification row.
+
+### USSD webhook
+
+`POST /api/ussd` already implements the provider contract, so wiring it up is
+just configuration: create a USSD channel in the Africa's Talking dashboard and
+point its callback at `https://<your-host>/api/ussd`.
+
+That address has to be public HTTPS, so USSD cannot be exercised while the app
+is only reachable on a local network. The in-app simulator at `/ussd` posts to
+the same endpoint and is the way to demo the flow offline.

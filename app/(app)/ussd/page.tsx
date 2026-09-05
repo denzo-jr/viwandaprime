@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/auth";
+import { isLive, isSandbox } from "@/lib/africastalking";
 import UssdSimulator from "@/components/UssdSimulator";
-import { PageHeader, SectionTitle } from "@/components/ui";
+import { Eyebrow, PageHeader, SectionTitle } from "@/components/ui";
 
 const ACCENT = "#338346";
 
@@ -19,20 +20,50 @@ export default async function UssdPage() {
       />
 
       <section className="pad">
-        <div className="card p-4" style={{ borderColor: `${ACCENT}33` }}>
-          <p className="text-sm leading-relaxed">
+        <div className="panel p-5">
+          <p className="text-[0.9rem] leading-relaxed">
             Most fundis and workers in Tanzania do not carry a smartphone. The
             whole marketplace also runs over USSD, so a technician with a
             10,000/= handset can still receive work.
           </p>
-          <p className="text-xs text-[var(--color-mist)] mt-3 leading-relaxed">
-            This simulator posts to the same{" "}
-            <span className="font-mono text-[var(--color-chalk)]">
-              /api/ussd
-            </span>{" "}
-            endpoint that Africa&rsquo;s Talking calls in production — the
-            request and response format is identical.
+          <p className="text-[0.8rem] text-[var(--color-mist)] mt-3 leading-relaxed">
+            The simulator below posts to the same{" "}
+            <span className="mono text-[var(--color-ink)]">/api/ussd</span>{" "}
+            endpoint Africa&rsquo;s Talking calls in production — identical
+            request body, identical <span className="mono">CON</span>/
+            <span className="mono">END</span> responses.
           </p>
+        </div>
+      </section>
+
+      {/* Wiring the real service code */}
+      <section className="pad mt-6">
+        <div className="offline">
+          <div className="ussd-icon">*#</div>
+          <div className="min-w-0">
+            <Eyebrow>
+              {isLive()
+                ? isSandbox()
+                  ? "Provider connected · sandbox"
+                  : "Provider connected · live"
+                : "Provider not configured"}
+            </Eyebrow>
+            <h3 className="display text-[1.02rem] mt-1.5">
+              Point a service code at this endpoint.
+            </h3>
+            <p
+              className="text-[0.78rem] mt-2 leading-relaxed"
+              style={{ color: "#bdccc6" }}
+            >
+              In the Africa&rsquo;s Talking dashboard, create a USSD channel and
+              set its callback to{" "}
+              <span className="mono" style={{ color: "#d8ef51" }}>
+                https://&lt;your-host&gt;/api/ussd
+              </span>
+              . The endpoint needs a public HTTPS address, so it cannot be
+              reached while the app is only on your local network.
+            </p>
+          </div>
         </div>
       </section>
 

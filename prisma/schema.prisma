@@ -305,9 +305,11 @@ model Notification {
   channel    String  @default("SMS") // SMS | USSD | IN_APP
   to         String
   message    String
-  status     String  @default("SIMULATED") // QUEUED | SENT | FAILED | SIMULATED
+  status     String  @default("SIMULATED") // QUEUED | SENT | FAILED | SIMULATED | BLOCKED
   provider   String  @default("simulator") // simulator | africastalking
-  providerId String?
+  providerId String? // Africa's Talking messageId
+  cost       String? // e.g. "TZS 35.0000"
+  detail     String? // provider message when a send does not succeed
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
