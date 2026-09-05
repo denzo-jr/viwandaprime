@@ -10,7 +10,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma db push --force-reset && npm run db:seed",
     "lan": "next start -H 0.0.0.0 -p 3000",
-    "tunnel": "node scripts/tunnel.mjs"
+    "tunnel": "node scripts/tunnel.mjs",
+    "sms:test": "node scripts/send-test-sms.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
