@@ -56,3 +56,89 @@ Tanzania's growing manufacturing and SME sectors need practical ways to share re
 ## Hackathon Vision
 
 Viwanda Prime aims to become the operating marketplace for Tanzania's industrial economy — helping every machine get fixed, every useful asset get shared, every reusable material find a buyer, and every worker find a fair opportunity.
+
+---
+
+## Running it
+
+```bash
+npm install
+npx prisma db push     # creates prisma/dev.db (SQLite)
+npm run db:seed        # loads demo businesses, fundis, workers and listings
+npm run dev            # http://localhost:3000
+```
+
+Every seeded account uses PIN **1234**. The landing page has one-tap logins for
+the three demo personas:
+
+| Persona | Phone | Role |
+| --- | --- | --- |
+| Azania Plastics Ltd (Neema Kileo) | `0754 110 001` | Business |
+| Juma Mwakyusa | `0754 110 002` | Technician |
+| Rehema S. Mushi | `0754 110 003` | Worker |
+
+`npm run db:reset` wipes and re-seeds if a demo goes sideways.
+
+## Architecture
+
+- **Next.js 16** (App Router, server components, server actions) + TypeScript
+- **SQLite via Prisma** — one file, zero setup, no network needed at demo time
+- **Tailwind v4** with a phone-first shell capped at 34rem
+- Auth is phone + PIN, bcrypt-hashed, with a signed JWT in an httpOnly cookie
+
+```
+app/
+  actions/       server actions, one file per module
+  fundilink/     repair jobs, quotes, technician profiles
+  machineshare/  machinery & spare-part listings, bookings
+  takatrade/     industrial waste listings and orders
+  kibaruapay/    labour jobs, applications, payouts
+  api/ussd/      Africa's Talking USSD webhook
+lib/
+  payments.ts        escrow: hold -> release
+  africastalking.ts  SMS/USSD adapter
+```
+
+## Money: escrow, not promises
+
+Nobody gets paid on trust. When a business accepts a quote, hires a worker or
+buys material, the money is captured and **held in escrow**. It is only released
+to the technician, worker or seller when the buyer confirms the work is done —
+at which point the earner's wallet is credited and both sides get an SMS.
+
+This is the same flow in all four modules (`lib/payments.ts`).
+
+## USSD — the 60% without smartphones
+
+Most fundis and casual workers in Tanzania are on feature phones, so the
+marketplace also runs on USSD. `POST /api/ussd` implements the Africa's Talking
+contract exactly (`sessionId`, `serviceCode`, `phoneNumber`, `text` in;
+`CON `/`END ` out), so pointing a real service code at it needs no code changes.
+
+Dial `*384*7788#`:
+
+```
+1. Ripoti hitilafu    report a breakdown, alerts every technician in the region
+2. Tafuta kazi        browse and apply for labour jobs
+3. Bei za taka        current material prices
+4. Salio langu        wallet balance and money in escrow
+```
+
+Try it in-app at `/ussd` — the simulator posts to that same endpoint.
+
+## Africa's Talking
+
+Notifications run through one adapter (`lib/africastalking.ts`). With no API key
+it runs in **simulator mode**: every message is stored and shown in the in-app
+SMS inbox (`/inbox`), so the product demos fully offline.
+
+To go live, set the credentials in `.env`:
+
+```
+AT_USERNAME="your-username"
+AT_API_KEY="your-api-key"
+AT_SENDER_ID="VIWANDA"
+```
+
+Nothing else changes — every module calls `notify()`, and the same adapter then
+posts to the real messaging endpoint.

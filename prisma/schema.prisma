@@ -1,0 +1,301 @@
+// Viwanda Prime - Tanzania industrial marketplace
+// SQLite for the hackathon build; swap `provider` to postgresql for production.
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ---------------------------------------------------------------------------
+// People & businesses
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String  @id @default(cuid())
+  phone        String  @unique // E.164 (+255...) so Africa's Talking can use it directly
+  name         String
+  email        String?
+  passwordHash String
+
+  roles        String // csv of BUSINESS | TECHNICIAN | WORKER
+  businessName String?
+  region       String
+  district     String
+  bio          String?
+
+  // technician / worker profile
+  skills          String? // csv
+  hourlyRate      Int? // TZS
+  yearsExperience Int?
+  available       Boolean @default(true)
+
+  verified      Boolean @default(false)
+  rating        Float   @default(0)
+  ratingCount   Int     @default(0)
+  avatarColor   String  @default("#f59e0b")
+  walletBalance Int     @default(0) // TZS
+
+  createdAt DateTime @default(now())
+
+  jobsPosted    JobRequest[] @relation("JobBusiness")
+  jobsTaken     JobRequest[] @relation("JobTechnician")
+  quotes        Quote[]
+  machines      Machine[]
+  bookings      Booking[]
+  wasteListings WasteListing[]
+  wasteOrders   WasteOrder[]
+  labourJobs    LabourJob[]  @relation("LabourBusiness")
+  applications  LabourApplication[]
+
+  paymentsSent     Payment[] @relation("PayFrom")
+  paymentsReceived Payment[] @relation("PayTo")
+
+  reviewsWritten  Review[] @relation("ReviewAuthor")
+  reviewsReceived Review[] @relation("ReviewSubject")
+
+  notifications Notification[]
+
+  @@index([region])
+}
+
+// ---------------------------------------------------------------------------
+// 1. FundiLink - technicians on demand
+// ---------------------------------------------------------------------------
+
+model JobRequest {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  machineType String
+  urgency     String  @default("NORMAL") // LOW | NORMAL | URGENT
+  region      String
+  district    String
+  budgetMin   Int?
+  budgetMax   Int?
+  status      String  @default("OPEN") // OPEN | ASSIGNED | IN_PROGRESS | COMPLETED | CANCELLED
+  agreedPrice Int?
+
+  businessId   String
+  business     User    @relation("JobBusiness", fields: [businessId], references: [id], onDelete: Cascade)
+  technicianId String?
+  technician   User?   @relation("JobTechnician", fields: [technicianId], references: [id])
+
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  quotes   Quote[]
+  payments Payment[]
+
+  @@index([status, region])
+}
+
+model Quote {
+  id       String @id @default(cuid())
+  price    Int
+  message  String
+  etaHours Int
+  status   String @default("PENDING") // PENDING | ACCEPTED | REJECTED
+
+  jobId        String
+  job          JobRequest @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  technicianId String
+  technician   User       @relation(fields: [technicianId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([jobId, technicianId])
+}
+
+// ---------------------------------------------------------------------------
+// 2. MachineShare - rent or sell machinery & spare parts
+// ---------------------------------------------------------------------------
+
+model Machine {
+  id          String  @id @default(cuid())
+  name        String
+  category    String // Machinery | Spare Parts | Tools | Vehicles
+  kind        String  @default("RENT") // RENT | SALE
+  description String
+  condition   String  @default("GOOD") // NEW | GOOD | FAIR
+  price       Int // TZS
+  priceUnit   String  @default("DAY") // DAY | WEEK | MONTH | ITEM
+  region      String
+  district    String
+  imageEmoji  String  @default("*")
+  available   Boolean @default(true)
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  bookings  Booking[]
+
+  @@index([category, region])
+}
+
+model Booking {
+  id         String   @id @default(cuid())
+  startDate  DateTime
+  endDate    DateTime
+  days       Int
+  totalPrice Int
+  status     String   @default("PENDING") // PENDING | CONFIRMED | ACTIVE | RETURNED | CANCELLED
+
+  machineId String
+  machine   Machine @relation(fields: [machineId], references: [id], onDelete: Cascade)
+  renterId  String
+  renter    User    @relation(fields: [renterId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  payments  Payment[]
+}
+
+// ---------------------------------------------------------------------------
+// 3. TakaTrade - industrial waste marketplace
+// ---------------------------------------------------------------------------
+
+model WasteListing {
+  id           String @id @default(cuid())
+  title        String
+  material     String
+  category     String // Metal | Plastic | Textile | Organic | Wood | Glass | Chemical
+  description  String
+  quantity     Float
+  unit         String @default("KG") // KG | TONNE | PIECE | LITRE
+  pricePerUnit Int // TZS
+  region       String
+  district     String
+  imageEmoji   String @default("*")
+  status       String @default("AVAILABLE") // AVAILABLE | RESERVED | SOLD
+
+  sellerId String
+  seller   User   @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  orders    WasteOrder[]
+
+  @@index([category, region])
+}
+
+model WasteOrder {
+  id         String @id @default(cuid())
+  quantity   Float
+  totalPrice Int
+  status     String @default("PENDING") // PENDING | CONFIRMED | COLLECTED | CANCELLED
+
+  listingId String
+  listing   WasteListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  buyerId   String
+  buyer     User         @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  payments  Payment[]
+}
+
+// ---------------------------------------------------------------------------
+// 4. KibaruaPay - flexible industrial labour + escrow payouts
+// ---------------------------------------------------------------------------
+
+model LabourJob {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  category      String // Loading | Cleaning | Packaging | Construction | Assembly | Warehouse
+  workersNeeded Int      @default(1)
+  payRate       Int // TZS
+  payUnit       String   @default("DAY") // HOUR | DAY | TASK
+  durationDays  Int      @default(1)
+  startDate     DateTime
+  region        String
+  district      String
+  status        String   @default("OPEN") // OPEN | FILLED | IN_PROGRESS | COMPLETED
+
+  businessId String
+  business   User   @relation("LabourBusiness", fields: [businessId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime @default(now())
+  applications LabourApplication[]
+
+  @@index([status, region])
+}
+
+model LabourApplication {
+  id      String @id @default(cuid())
+  message String
+  status  String @default("PENDING") // PENDING | ACCEPTED | REJECTED | COMPLETED
+
+  jobId    String
+  job      LabourJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  workerId String
+  worker   User      @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  payments  Payment[]
+
+  @@unique([jobId, workerId])
+}
+
+// ---------------------------------------------------------------------------
+// Money - mobile-money escrow (Africa's Talking Payments ready)
+// ---------------------------------------------------------------------------
+
+model Payment {
+  id        String @id @default(cuid())
+  reference String @unique
+  amount    Int // TZS
+  currency  String @default("TZS")
+  method    String // MPESA | TIGOPESA | AIRTELMONEY | HALOPESA | WALLET
+  status    String @default("PENDING") // PENDING | HELD_IN_ESCROW | RELEASED | FAILED | REFUNDED
+  purpose   String // JOB | BOOKING | WASTE | LABOUR
+
+  fromUserId String
+  fromUser   User   @relation("PayFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUserId   String
+  toUser     User   @relation("PayTo", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  jobId               String?
+  job                 JobRequest?        @relation(fields: [jobId], references: [id])
+  bookingId           String?
+  booking             Booking?           @relation(fields: [bookingId], references: [id])
+  wasteOrderId        String?
+  wasteOrder          WasteOrder?        @relation(fields: [wasteOrderId], references: [id])
+  labourApplicationId String?
+  labourApplication   LabourApplication? @relation(fields: [labourApplicationId], references: [id])
+
+  createdAt  DateTime  @default(now())
+  releasedAt DateTime?
+}
+
+model Review {
+  id      String @id @default(cuid())
+  rating  Int
+  comment String
+  context String // FundiLink | MachineShare | TakaTrade | KibaruaPay
+
+  authorId  String
+  author    User   @relation("ReviewAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  subjectId String
+  subject   User   @relation("ReviewSubject", fields: [subjectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+// Every outbound SMS/USSD lives here so the Africa's Talking swap is a one-file change.
+model Notification {
+  id         String  @id @default(cuid())
+  channel    String  @default("SMS") // SMS | USSD | IN_APP
+  to         String
+  message    String
+  status     String  @default("SIMULATED") // QUEUED | SENT | FAILED | SIMULATED
+  provider   String  @default("simulator") // simulator | africastalking
+  providerId String?
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
